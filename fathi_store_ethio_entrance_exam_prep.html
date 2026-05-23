@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fathi Store | Ethio Entrance Exam: Grade 12</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons for modern iconography -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts: Inter for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for progress tracking visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        dark: {
+                            bg: '#0f172a',
+                            surface: '#1e293b',
+                            border: '#334155'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background-color: #475569;
+        }
+        
+        /* Smooth transitions for theme switching */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Hide sections initially except home */
+        .app-section {
+            display: none;
+        }
+        .app-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-dark-bg dark:text-gray-100 min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-dark-surface/80 backdrop-blur-md border-b border-gray-200 dark:border-dark-border shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo & Branding -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                        <i class="ph ph-graduation-cap text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold leading-tight">Fathi Store</h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Students Assessments</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <button onclick="navigateTo('home')" class="nav-btn text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors active-nav">Home</button>
+                    <button onclick="navigateTo('practice')" class="nav-btn text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors">Practice</button>
+                    <button onclick="navigateTo('progress')" class="nav-btn text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors">Progress</button>
+                    <button onclick="navigateTo('exam')" class="nav-btn text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-500 font-medium transition-colors">Mock Exam</button>
+                </nav>
+
+                <!-- Actions: Dark Mode Toggle & Mobile Menu -->
+                <div class="flex items-center gap-4">
+                    <button onclick="installApp()" class="install-app-btn hidden px-3 py-1.5 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 hover:bg-brand-200 dark:hover:bg-brand-900/50 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2">
+                        <i class="ph ph-download-simple text-lg"></i> Install App
+                    </button>
+
+                    <button id="theme-toggle" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Toggle Dark Mode">
+                        <i id="theme-icon" class="ph ph-moon text-xl"></i>
+                    </button>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-600 dark:text-gray-300">
+                        <i class="ph ph-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-dark-border">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigateTo('home', true)" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">Home</button>
+                <button onclick="navigateTo('practice', true)" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">Practice (By Chapter)</button>
+                <button onclick="navigateTo('progress', true)" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">My Progress</button>
+                <button onclick="navigateTo('exam', true)" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">Mock Exam</button>
+                <button onclick="installApp()" class="install-app-btn hidden w-full text-left px-3 py-2 mt-2 rounded-md text-base font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/20 hover:bg-brand-100 dark:hover:bg-brand-900/40 flex items-center gap-2">
+                    <i class="ph ph-download-simple text-xl"></i> Install Offline App
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- ================= HOME SECTION ================= -->
+        <section id="section-home" class="app-section active">
+            <!-- Hero Banner -->
+            <div class="relative bg-white dark:bg-dark-surface rounded-3xl overflow-hidden shadow-xl shadow-brand-500/5 border border-gray-100 dark:border-dark-border mb-12">
+                <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10 px-6 py-12 md:py-20 md:px-12 flex flex-col md:flex-row items-center justify-between gap-10">
+                    <div class="w-full md:w-3/5 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 text-sm font-semibold mb-2">
+                            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                            100% Offline Accessible
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white leading-tight">
+                            Master the <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-blue-600">Ethio Entrance Exam</span> Grade 12
+                        </h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
+                            The ultimate preparation tool for Natural and Social Science students. Access years of past exams (2008-2017 EC), detailed explanations, and track your readiness—all without needing an internet connection.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <button onclick="navigateTo('practice')" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5 flex items-center gap-2">
+                                <i class="ph ph-books text-xl"></i> Start Practicing
+                            </button>
+                            <button onclick="navigateTo('exam')" class="px-6 py-3 bg-white dark:bg-dark-surface text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-dark-border hover:border-brand-500 dark:hover:border-brand-500 font-medium rounded-xl shadow-sm transition-all flex items-center gap-2">
+                                <i class="ph ph-timer text-xl"></i> Take Mock Exam
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative Graphic -->
+                    <div class="w-full md:w-2/5 flex justify-center animate-slide-up">
+                        <div class="relative w-72 h-72">
+                            <!-- Abstract Representation of App Interface -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-brand-100 to-blue-50 dark:from-gray-800 dark:to-dark-surface rounded-2xl shadow-2xl border border-white/50 dark:border-gray-700 transform rotate-3 flex flex-col p-4">
+                                <div class="w-full h-8 bg-gray-200/50 dark:bg-gray-700/50 rounded-lg mb-4"></div>
+                                <div class="w-3/4 h-4 bg-gray-200/50 dark:bg-gray-700/50 rounded-md mb-2"></div>
+                                <div class="w-1/2 h-4 bg-gray-200/50 dark:bg-gray-700/50 rounded-md mb-6"></div>
+                                <div class="grid grid-cols-2 gap-3 flex-grow">
+                                    <div class="bg-brand-500/20 rounded-xl"></div>
+                                    <div class="bg-blue-500/20 rounded-xl"></div>
+                                    <div class="bg-purple-500/20 rounded-xl"></div>
+                                    <div class="bg-orange-500/20 rounded-xl"></div>
+                                </div>
+                            </div>
+                            <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+                            <div class="absolute -top-4 -right-4 w-24 h-24 bg-brand-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Features Grid -->
+            <div class="mb-8">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i class="ph-fill ph-sparkle text-brand-500"></i> Why Choose Our App
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-database text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2">Extensive Question Bank</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Access years of past National Exams from 2008 to 2017 EC, complete with detailed explanations.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 text-brand-600 dark:text-brand-400 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-funnel text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2">Chapter-by-Chapter</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Don't just guess. Filter and practice questions focused on specific units and subjects you need to master.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-chart-line-up text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2">Progress Tracking</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Monitor your statistics visually. Easily identify your strong subjects and areas needing improvement.</p>
+                    </div>
+                    <!-- Feature 4 -->
+                    <div class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-100 dark:border-dark-border shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-xl flex items-center justify-center mb-4">
+                            <i class="ph ph-wifi-slash text-2xl"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold mb-2">100% Offline</h4>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">Study anywhere, anytime. No internet connection is required once the app is installed.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Subject Selection Quick Start -->
+            <div>
+                <h3 class="text-2xl font-bold mb-6">Quick Start by Stream</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Natural Science -->
+                    <div class="relative overflow-hidden rounded-2xl group cursor-pointer" onclick="navigateTo('practice')">
+                        <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80" alt="Natural Science" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-gray-900/20 flex flex-col justify-end p-6">
+                            <h4 class="text-2xl font-bold text-white mb-1">Natural Sciences</h4>
+                            <p class="text-gray-200 text-sm">Physics, Chemistry, Biology, Maths (Nat)</p>
+                        </div>
+                    </div>
+                    <!-- Social Science -->
+                    <div class="relative overflow-hidden rounded-2xl group cursor-pointer" onclick="navigateTo('practice')">
+                        <img src="https://images.unsplash.com/photo-1455390582262-044cdead27d8?auto=format&fit=crop&w=800&q=80" alt="Social Science" class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 to-gray-900/20 flex flex-col justify-end p-6">
+                            <h4 class="text-2xl font-bold text-white mb-1">Social Sciences</h4>
+                            <p class="text-gray-200 text-sm">Geography, History, Economics, Maths (Soc)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PRACTICE SECTION ================= -->
+        <section id="section-practice" class="app-section">
+            <div id="practice-header-text" class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">Practice by Subject</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Select your stream and subject to focus your study.</p>
+                </div>
+            </div>
+
+            <!-- Stream Selector Tabs -->
+            <div id="stream-selector-container" class="flex p-1 bg-gray-200 dark:bg-gray-800 rounded-xl mb-6 w-full max-w-md">
+                <button onclick="toggleStream('natural')" id="tab-natural" class="flex-1 py-2 px-4 rounded-lg text-sm font-bold shadow-sm bg-white dark:bg-dark-surface text-brand-600 dark:text-brand-400 transition-all">Natural Science</button>
+                <button onclick="toggleStream('social')" id="tab-social" class="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all">Social Science</button>
+            </div>
+
+            <!-- Subjects Container -->
+            <div id="subjects-container" class="mb-8">
+                <!-- Natural Subjects Grid -->
+                <div id="grid-natural" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
+                    <div onclick="openSubject('Physics', 'ph-atom')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-atom"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Physics</h4><p class="text-xs text-gray-500">8 Units • 450 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Chemistry', 'ph-flask')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 text-purple-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-flask"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Chemistry</h4><p class="text-xs text-gray-500">6 Units • 380 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Biology', 'ph-plant')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-green-50 dark:bg-green-900/20 text-green-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-plant"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Biology</h4><p class="text-xs text-gray-500">7 Units • 410 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Maths (Natural)', 'ph-function')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-function"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Maths (Nat)</h4><p class="text-xs text-gray-500">9 Units • 520 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('English', 'ph-book-open')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-book-open"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">English</h4><p class="text-xs text-gray-500">12 Units • 600 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Civics & Ethical Ed.', 'ph-scales')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-scales"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Civics</h4><p class="text-xs text-gray-500">5 Units • 300 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Scholastic Aptitude', 'ph-brain')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/20 text-pink-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-brain"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">SAT (Aptitude)</h4><p class="text-xs text-gray-500">Mock Tests • 250 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                </div>
+
+                <!-- Social Subjects Grid -->
+                <div id="grid-social" class="hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in">
+                    <div onclick="openSubject('Geography', 'ph-globe')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/20 text-teal-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-globe"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Geography</h4><p class="text-xs text-gray-500">8 Units • 420 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('History', 'ph-hourglass')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/20 text-orange-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-hourglass"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">History</h4><p class="text-xs text-gray-500">7 Units • 390 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Economics', 'ph-chart-line-up')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-chart-line-up"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Economics</h4><p class="text-xs text-gray-500">6 Units • 350 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Maths (Social)', 'ph-function')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-red-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-function"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Maths (Soc)</h4><p class="text-xs text-gray-500">8 Units • 480 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('English', 'ph-book-open')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-book-open"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">English</h4><p class="text-xs text-gray-500">12 Units • 600 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Civics & Ethical Ed.', 'ph-scales')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-scales"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">Civics</h4><p class="text-xs text-gray-500">5 Units • 300 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                    <div onclick="openSubject('Scholastic Aptitude', 'ph-brain')" class="bg-white dark:bg-dark-surface p-5 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm hover:shadow-md hover:border-brand-300 dark:hover:border-brand-700 transition-all cursor-pointer group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/20 text-pink-500 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><i class="ph ph-brain"></i></div>
+                        <div><h4 class="font-bold text-gray-900 dark:text-gray-100">SAT (Aptitude)</h4><p class="text-xs text-gray-500">Mock Tests • 250 Qs</p></div>
+                        <i class="ph ph-caret-right ml-auto text-gray-400 group-hover:text-brand-500"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subject Units Accordion / List (Dynamic Container) -->
+            <div id="units-container" class="hidden animate-fade-in mb-8">
+                <button onclick="backToSubjects()" class="mb-4 px-3 py-1.5 bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-2 transition-colors shadow-sm w-fit">
+                    <i class="ph ph-arrow-left"></i> Back to Subjects
+                </button>
+                
+                <div class="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-dark-border overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800/50 flex justify-between items-center">
+                        <h3 id="dynamic-subject-title" class="font-bold text-lg flex items-center gap-2">
+                            <i class="ph-fill ph-atom text-brand-500 text-xl"></i> Subject Title
+                        </h3>
+                        <span id="dynamic-subject-badge" class="text-sm bg-brand-100 text-brand-800 dark:bg-brand-900/50 dark:text-brand-200 py-1 px-3 rounded-full font-medium">Units Available</span>
+                    </div>
+                    
+                    <div class="divide-y divide-gray-100 dark:divide-dark-border">
+                        <!-- Unit Item -->
+                        <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex-grow">
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">Unit 1: Fundamentals & Concepts</h4>
+                                <div class="flex items-center gap-4 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <span class="flex items-center gap-1"><i class="ph ph-files"></i> 45 Questions</span>
+                                    <span class="flex items-center gap-1"><i class="ph ph-check-circle text-brand-500"></i> 10 Completed</span>
+                                </div>
+                                <!-- Progress Bar -->
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-3">
+                                    <div class="bg-brand-500 h-1.5 rounded-full" style="width: 22%"></div>
+                                </div>
+                            </div>
+                            <button onclick="startQuiz(document.getElementById('dynamic-subject-title').innerText.replace(' (Grade 12)', ''), 'Unit 1')" class="shrink-0 px-4 py-2 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/40 border border-brand-200 dark:border-brand-800 font-medium rounded-lg transition-colors flex items-center gap-2">
+                                Start <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Unit Item -->
+                        <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex-grow">
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">Unit 2: Advanced Applications</h4>
+                                <div class="flex items-center gap-4 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <span class="flex items-center gap-1"><i class="ph ph-files"></i> 60 Questions</span>
+                                    <span class="flex items-center gap-1"><i class="ph ph-clock text-yellow-500"></i> Not Started</span>
+                                </div>
+                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-3">
+                                    <div class="bg-brand-500 h-1.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <button onclick="startQuiz(document.getElementById('dynamic-subject-title').innerText.replace(' (Grade 12)', ''), 'Unit 2')" class="shrink-0 px-4 py-2 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/40 border border-brand-200 dark:border-brand-800 font-medium rounded-lg transition-colors flex items-center gap-2">
+                                Start <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Unit Item -->
+                        <div class="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex-grow">
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">Unit 3: Review & Past Exams</h4>
+                                <div class="flex items-center gap-4 mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <span class="flex items-center gap-1"><i class="ph ph-files"></i> 35 Questions</span>
+                                    <span class="flex items-center gap-1"><i class="ph ph-clock text-yellow-500"></i> Not Started</span>
+                                </div>
+                                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-3">
+                                    <div class="bg-brand-500 h-1.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                            </div>
+                            <button onclick="startQuiz(document.getElementById('dynamic-subject-title').innerText.replace(' (Grade 12)', ''), 'Unit 3')" class="shrink-0 px-4 py-2 bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/40 border border-brand-200 dark:border-brand-800 font-medium rounded-lg transition-colors flex items-center gap-2">
+                                Start <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Active Quiz Area (Hidden initially, shown by JS mock) -->
+            <div id="active-quiz-area" class="hidden bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-dark-border shadow-md overflow-hidden">
+                <div class="p-4 border-b border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <button onclick="exitQuiz()" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors">
+                            <i class="ph ph-arrow-left"></i>
+                        </button>
+                        <div>
+                            <h3 id="quiz-title" class="font-bold">Physics: Unit 1</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Question 1 of 45 | EUEE 2012 EC</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm font-medium">
+                        <i class="ph ph-lightbulb text-yellow-500 text-lg cursor-pointer hover:scale-110 transition-transform" title="Show Hint/Explanation"></i>
+                    </div>
+                </div>
+                
+                <div class="p-6 md:p-8">
+                    <div class="mb-6">
+                        <span class="inline-block px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs font-semibold text-gray-600 dark:text-gray-300 mb-3">ID: PHY-12-001</span>
+                        <p class="text-lg font-medium leading-relaxed">If a thermodynamic system undergoes a process in which its internal energy remains constant, which of the following statements is true?</p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <label onclick="checkPracticeAnswer(this, false)" class="practice-option flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all group">
+                            <input type="radio" name="q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                            <span class="text-gray-700 dark:text-gray-200 group-hover:text-brand-900 dark:group-hover:text-brand-100">A) The process must be adiabatic.</span>
+                        </label>
+                        <label onclick="checkPracticeAnswer(this, true)" class="practice-option flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all group relative overflow-hidden">
+                            <input type="radio" name="q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                            <span class="text-gray-700 dark:text-gray-200 group-hover:text-brand-900 dark:group-hover:text-brand-100 font-medium">B) The heat added to the system equals the work done by the system.</span>
+                            <div class="correct-icon hidden absolute right-4 top-1/2 -translate-y-1/2 text-brand-500">
+                                <i class="ph-fill ph-check-circle text-2xl"></i>
+                            </div>
+                        </label>
+                        <label onclick="checkPracticeAnswer(this, false)" class="practice-option flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all group">
+                            <input type="radio" name="q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                            <span class="text-gray-700 dark:text-gray-200 group-hover:text-brand-900 dark:group-hover:text-brand-100">C) The temperature of the system must decrease.</span>
+                        </label>
+                        <label onclick="checkPracticeAnswer(this, false)" class="practice-option flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all group">
+                            <input type="radio" name="q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                            <span class="text-gray-700 dark:text-gray-200 group-hover:text-brand-900 dark:group-hover:text-brand-100">D) No work is done by the system.</span>
+                        </label>
+                    </div>
+
+                    <!-- Explanation Box (Mock) -->
+                    <div id="practice-explanation" class="hidden mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-r-xl animate-fade-in">
+                        <h5 class="font-semibold text-blue-800 dark:text-blue-300 flex items-center gap-2 mb-1">
+                            <i class="ph-fill ph-info"></i> Explanation
+                        </h5>
+                        <p class="text-sm text-blue-900 dark:text-blue-100">
+                            According to the First Law of Thermodynamics, ΔU = Q - W. If the internal energy remains constant (ΔU = 0), then 0 = Q - W, which means Q = W. Therefore, the heat added to the system equals the work done by the system.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="p-4 border-t border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800 flex justify-between items-center">
+                    <button class="px-4 py-2 text-gray-600 dark:text-gray-400 font-medium disabled:opacity-50" disabled>Previous</button>
+                    <div class="flex gap-1">
+                        <div class="w-2 h-2 rounded-full bg-brand-500"></div>
+                        <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                        <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                        <div class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                    </div>
+                    <button class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROGRESS SECTION ================= -->
+        <section id="section-progress" class="app-section">
+            <h2 class="text-3xl font-bold mb-2">My Progress Tracking</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-8">Monitor your performance across different subjects to identify areas for improvement.</p>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white dark:bg-dark-surface p-5 rounded-xl border border-gray-200 dark:border-dark-border shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-full">
+                        <i class="ph-fill ph-check-square-offset text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Questions Attempted</p>
+                        <p class="text-2xl font-bold">1,245</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-dark-surface p-5 rounded-xl border border-gray-200 dark:border-dark-border shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full">
+                        <i class="ph-fill ph-target text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Overall Accuracy</p>
+                        <p class="text-2xl font-bold">68%</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-dark-surface p-5 rounded-xl border border-gray-200 dark:border-dark-border shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">
+                        <i class="ph-fill ph-timer text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Study Time</p>
+                        <p class="text-2xl font-bold">42h 15m</p>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-dark-surface p-5 rounded-xl border border-gray-200 dark:border-dark-border shadow-sm flex items-center gap-4">
+                    <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
+                        <i class="ph-fill ph-exam text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Mock Exams Taken</p>
+                        <p class="text-2xl font-bold">4</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Chart Area -->
+                <div class="lg:col-span-2 bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm">
+                    <h3 class="font-bold text-lg mb-4">Accuracy by Subject (Natural Science)</h3>
+                    <div class="relative h-72 w-full">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Weakness Analysis -->
+                <div class="bg-white dark:bg-dark-surface p-6 rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm">
+                    <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="ph-fill ph-warning-circle text-orange-500"></i> Areas to Focus On
+                    </h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Based on your recent practice history.</p>
+                    
+                    <ul class="space-y-4">
+                        <li class="p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium text-red-800 dark:text-red-300">Chemistry: Organic Chem</span>
+                                <span class="text-xs font-bold text-red-600 dark:text-red-400">42% Accuracy</span>
+                            </div>
+                            <button onclick="navigateTo('practice')" class="text-xs text-red-600 dark:text-red-400 underline mt-1">Practice Now</button>
+                        </li>
+                        <li class="p-3 rounded-lg bg-orange-50 dark:bg-orange-900/10 border border-orange-100 dark:border-orange-900/30">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium text-orange-800 dark:text-orange-300">Physics: Electromagnetism</span>
+                                <span class="text-xs font-bold text-orange-600 dark:text-orange-400">51% Accuracy</span>
+                            </div>
+                            <button onclick="navigateTo('practice')" class="text-xs text-orange-600 dark:text-orange-400 underline mt-1">Practice Now</button>
+                        </li>
+                        <li class="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/30">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium text-yellow-800 dark:text-yellow-300">Maths: Integration</span>
+                                <span class="text-xs font-bold text-yellow-600 dark:text-yellow-400">58% Accuracy</span>
+                            </div>
+                            <button onclick="navigateTo('practice')" class="text-xs text-yellow-600 dark:text-yellow-400 underline mt-1">Practice Now</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MOCK EXAM SECTION ================= -->
+        <section id="section-exam" class="app-section">
+            <div class="max-w-3xl mx-auto">
+                <div id="exam-config-container">
+                    <div class="text-center mb-10">
+                        <div class="w-20 h-20 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="ph ph-timer text-4xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold mb-4">Exam Simulator</h2>
+                        <p class="text-gray-600 dark:text-gray-400">Experience the real EUEE pressure. Timed exams based on actual past papers structure.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm p-6 md:p-8">
+                        <form id="exam-config-form" class="space-y-6" onsubmit="event.preventDefault(); document.getElementById('exam-start-modal').classList.remove('hidden');">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Year</label>
+                                <select class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-dark-border text-gray-900 dark:text-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                    <option>Random Mix (All Years)</option>
+                                    <option>2016 EC</option>
+                                    <option>2015 EC</option>
+                                    <option>2014 EC</option>
+                                    <option>2013 EC</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Subject</label>
+                                <select class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-dark-border text-gray-900 dark:text-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                    <optgroup label="Natural Science Stream">
+                                        <option>Physics</option>
+                                        <option>Chemistry</option>
+                                        <option>Biology</option>
+                                        <option>Mathematics (Natural)</option>
+                                    </optgroup>
+                                    <optgroup label="Social Science Stream">
+                                        <option>Geography</option>
+                                        <option>History</option>
+                                        <option>Economics</option>
+                                        <option>Mathematics (Social)</option>
+                                    </optgroup>
+                                    <optgroup label="Common Courses">
+                                        <option>English</option>
+                                        <option>Civics & Ethical Education</option>
+                                        <option>Scholastic Aptitude Test (SAT)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 flex items-center justify-between">
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-gray-100">Exam Details</h4>
+                                    <ul class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        <li>Total Questions: 120</li>
+                                        <li>Time Limit: 2 Hours 30 Mins</li>
+                                    </ul>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                                        <i class="ph-fill ph-warning-circle"></i> Strict Timing
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/30 transition-all text-lg flex justify-center items-center gap-2">
+                                Begin Exam Simulation <i class="ph ph-play-circle text-xl"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="active-exam-area" class="hidden">
+                    <div class="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-dark-border shadow-sm overflow-hidden flex flex-col md:flex-row">
+                        <!-- Sidebar for Navigation -->
+                        <div class="w-full md:w-64 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-dark-border p-4 h-auto md:h-[600px] flex flex-col">
+                            <div class="text-center mb-6">
+                                <div class="inline-flex items-center gap-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg font-mono text-2xl font-bold tracking-wider">
+                                    <i class="ph ph-clock"></i>
+                                    <span id="exam-timer">02:30:00</span>
+                                </div>
+                            </div>
+                            <h4 class="font-semibold text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Question Navigator</h4>
+                            <div class="flex-grow overflow-y-auto pr-2 custom-scrollbar grid grid-cols-5 gap-2 content-start">
+                                <!-- Generating mock question grid (1-20 for demo) -->
+                                <button class="w-8 h-8 rounded bg-brand-500 text-white text-xs font-bold flex items-center justify-center">1</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">2</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">3</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">4</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">5</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">6</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">7</button>
+                                <button class="w-8 h-8 rounded bg-yellow-400 text-yellow-900 text-xs font-bold flex items-center justify-center" title="Marked for review">8</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">9</button>
+                                <button class="w-8 h-8 rounded bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold flex items-center justify-center hover:bg-gray-300 dark:hover:bg-gray-600">10</button>
+                                <div class="col-span-5 text-center text-xs text-gray-400 mt-2">... 110 more</div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-dark-border">
+                                <button onclick="endMockExam()" class="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors">Submit Exam</button>
+                            </div>
+                        </div>
+
+                        <!-- Main Question Area -->
+                        <div class="flex-grow p-6 md:p-8 flex flex-col h-auto md:h-[600px]">
+                            <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-dark-border">
+                                <h3 class="font-bold text-lg">Question 1 <span class="text-sm font-normal text-gray-500">of 120</span></h3>
+                                <button class="text-yellow-600 dark:text-yellow-400 text-sm font-medium flex items-center gap-1 hover:underline">
+                                    <i class="ph ph-flag"></i> Mark for review
+                                </button>
+                            </div>
+                            
+                            <div class="flex-grow overflow-y-auto custom-scrollbar pr-2 mb-6">
+                                <p class="text-lg font-medium leading-relaxed mb-6 text-gray-900 dark:text-white">
+                                    A 5 kg block is placed on a frictionless inclined plane with an angle of 30° to the horizontal. What is the acceleration of the block as it slides down the plane? (Take g = 9.8 m/s²)
+                                </p>
+                                
+                                <div class="space-y-3">
+                                    <label class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-brand-900/20">
+                                        <input type="radio" name="exam_q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-gray-700 dark:text-gray-200 font-medium">A) 9.8 m/s²</span>
+                                    </label>
+                                    <label class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-brand-900/20">
+                                        <input type="radio" name="exam_q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-gray-700 dark:text-gray-200 font-medium">B) 4.9 m/s²</span>
+                                    </label>
+                                    <label class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-brand-900/20">
+                                        <input type="radio" name="exam_q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-gray-700 dark:text-gray-200 font-medium">C) 8.5 m/s²</span>
+                                    </label>
+                                    <label class="flex items-start p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:border-brand-300 dark:hover:border-brand-700 transition-all has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50 dark:has-[:checked]:bg-brand-900/20">
+                                        <input type="radio" name="exam_q1" class="mt-1 mr-3 text-brand-600 focus:ring-brand-500">
+                                        <span class="text-gray-700 dark:text-gray-200 font-medium">D) 0 m/s²</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mt-auto pt-4 border-t border-gray-100 dark:border-dark-border">
+                                <button class="px-5 py-2 text-gray-600 dark:text-gray-400 font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors opacity-50 cursor-not-allowed">Previous</button>
+                                <button class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-lg transition-colors shadow-md shadow-brand-500/20 flex items-center gap-2">
+                                    Next Question <i class="ph ph-caret-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Exam Start Warning Modal (Hidden by default) -->
+    <div id="exam-start-modal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-dark-surface w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all">
+            <div class="p-6">
+                <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="ph-fill ph-warning text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-center mb-2">Ready to Start?</h3>
+                <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+                    Once you start, the timer cannot be paused. Ensure you have a quiet environment for the next 2.5 hours.
+                </p>
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('exam-start-modal').classList.add('hidden')" class="flex-1 py-3 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+                    <button onclick="startMockExam()" class="flex-1 py-3 bg-brand-600 text-white font-medium rounded-xl hover:bg-brand-700 transition-colors shadow-lg shadow-brand-500/30">I'm Ready</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-dark-surface border-t border-gray-200 dark:border-dark-border mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-graduation-cap text-brand-500 text-xl"></i>
+                    <span class="font-bold text-lg">Fathi Store</span>
+                </div>
+                <p class="text-gray-500 dark:text-gray-400 text-sm">
+                    &copy; 2026 Fathi Store. Students Assessments. All offline rights reserved.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-brand-500"><i class="ph ph-facebook-logo text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-brand-500"><i class="ph ph-telegram-logo text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Logic -->
+    <script>
+        // --- Theme Management (Dark/Light Mode) ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference or use system preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            updateThemeIcon(true);
+        } else {
+            htmlElement.classList.remove('dark');
+            updateThemeIcon(false);
+        }
+
+        function updateThemeIcon(isDark) {
+            if (isDark) {
+                themeIcon.classList.replace('ph-moon', 'ph-sun');
+            } else {
+                themeIcon.classList.replace('ph-sun', 'ph-moon');
+            }
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
+            
+            // Re-render chart to update colors based on theme if it exists
+            if(window.myChart) {
+                initChart(); 
+            }
+        });
+
+        <!-- Mobile Menu Toggle ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Navigation Logic ---
+        function navigateTo(sectionId, isMobile = false) {
+            // Hide all sections
+            document.querySelectorAll('.app-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Show target section
+            document.getElementById(`section-${sectionId}`).classList.add('active');
+
+            // Update Desktop Nav visual state
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'dark:text-brand-500');
+            });
+            // Find the button that was clicked and style it (rough matching based on text content for this demo)
+            const navLinks = document.querySelectorAll('.nav-btn');
+            for(let link of navLinks) {
+                if(link.textContent.toLowerCase().includes(sectionId)) {
+                    link.classList.add('text-brand-600', 'dark:text-brand-500');
+                    break;
+                }
+            }
+
+            // Close mobile menu if open
+            if(isMobile) {
+                mobileMenu.classList.add('hidden');
+            }
+
+            // Initialize chart if navigating to progress
+            if(sectionId === 'progress') {
+                setTimeout(initChart, 100); // slight delay to ensure container is visible
+            }
+            
+            // Reset practice view if navigating away
+            if(sectionId !== 'practice') {
+                exitQuiz(false); // quietly exit quiz without confirming
+                if(typeof backToSubjects === 'function') backToSubjects(); // Reset to grid view
+            }
+            
+            if(sectionId !== 'exam') {
+                if(examTimerInterval) endMockExam(false); 
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Practice Section Mock Logic ---
+        function toggleStream(stream) {
+            const tabNat = document.getElementById('tab-natural');
+            const tabSoc = document.getElementById('tab-social');
+            const gridNat = document.getElementById('grid-natural');
+            const gridSoc = document.getElementById('grid-social');
+
+            const activeClasses = ['bg-white', 'dark:bg-dark-surface', 'text-brand-600', 'dark:text-brand-400', 'shadow-sm', 'font-bold'];
+            const inactiveClasses = ['text-gray-600', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white', 'font-medium'];
+
+            if (stream === 'natural') {
+                tabNat.classList.remove(...inactiveClasses); tabNat.classList.add(...activeClasses);
+                tabSoc.classList.remove(...activeClasses); tabSoc.classList.add(...inactiveClasses);
+                gridNat.classList.remove('hidden'); gridNat.classList.add('grid');
+                gridSoc.classList.add('hidden'); gridSoc.classList.remove('grid');
+            } else {
+                tabSoc.classList.remove(...inactiveClasses); tabSoc.classList.add(...activeClasses);
+                tabNat.classList.remove(...activeClasses); tabNat.classList.add(...inactiveClasses);
+                gridSoc.classList.remove('hidden'); gridSoc.classList.add('grid');
+                gridNat.classList.add('hidden'); gridNat.classList.remove('grid');
+            }
+        }
+
+        function openSubject(name, icon) {
+            document.getElementById('subjects-container').classList.add('hidden');
+            document.getElementById('stream-selector-container').classList.add('hidden');
+            document.getElementById('practice-header-text').classList.add('hidden');
+            
+            const unitsContainer = document.getElementById('units-container');
+            unitsContainer.classList.remove('hidden');
+            
+            document.getElementById('dynamic-subject-title').innerHTML = `<i class="ph-fill ${icon} text-brand-500 text-xl"></i> ${name} (Grade 12)`;
+        }
+
+        function backToSubjects() {
+            const unitsContainer = document.getElementById('units-container');
+            if(unitsContainer) unitsContainer.classList.add('hidden');
+            
+            const subjectsContainer = document.getElementById('subjects-container');
+            if(subjectsContainer) subjectsContainer.classList.remove('hidden');
+            
+            const streamSelector = document.getElementById('stream-selector-container');
+            if(streamSelector) streamSelector.classList.remove('hidden');
+            
+            const headerText = document.getElementById('practice-header-text');
+            if(headerText) headerText.classList.remove('hidden');
+        }
+
+        function startQuiz(subject, unit) {
+            document.getElementById('quiz-title').textContent = `${subject}: ${unit}`;
+            // Hide accordion, show quiz area
+            document.getElementById('units-container').classList.add('hidden');
+            
+            // Show the actual quiz area
+            const quizArea = document.getElementById('active-quiz-area');
+            quizArea.classList.remove('hidden');
+            quizArea.classList.add('block', 'animate-fade-in');
+            
+            // Reset previous quiz state
+            document.getElementById('practice-explanation').classList.add('hidden');
+            document.querySelectorAll('.practice-option').forEach(opt => {
+                opt.classList.remove('border-red-500', 'bg-red-50', 'dark:bg-red-900/20', 'border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20', 'pointer-events-none');
+                const radio = opt.querySelector('input[type="radio"]');
+                if(radio) radio.checked = false;
+                const icon = opt.querySelector('.correct-icon');
+                if(icon) icon.classList.add('hidden');
+            });
+        }
+
+        // Handle checking answers in practice mode
+        function checkPracticeAnswer(element, isCorrect) {
+            // Prevent multiple clicks by disabling options
+            const allOptions = element.parentElement.querySelectorAll('.practice-option');
+            allOptions.forEach(opt => opt.classList.add('pointer-events-none'));
+            
+            // Mark the selected radio button
+            const radio = element.querySelector('input[type="radio"]');
+            if(radio) radio.checked = true;
+
+            if (isCorrect) {
+                // Highlight correct selection in green
+                element.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
+                const icon = element.querySelector('.correct-icon');
+                if(icon) icon.classList.remove('hidden');
+                showToast('<i class="ph-fill ph-check-circle text-xl"></i> Correct! Great job.', 2000);
+            } else {
+                // Highlight incorrect selection in red
+                element.classList.add('border-red-500', 'bg-red-50', 'dark:bg-red-900/20');
+                
+                // Find and highlight the actual correct option to teach the user
+                const correctOption = element.parentElement.querySelector('[onclick*="true"]');
+                if(correctOption) {
+                    correctOption.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-900/20');
+                    const correctIcon = correctOption.querySelector('.correct-icon');
+                    if(correctIcon) correctIcon.classList.remove('hidden');
+                }
+                
+                showToast('<i class="ph-fill ph-x-circle text-xl text-white"></i> Incorrect. Review the explanation.', 3000);
+            }
+            
+            // Reveal the explanation box
+            document.getElementById('practice-explanation').classList.remove('hidden');
+        }
+
+        function exitQuiz(confirmFirst = true) {
+            if(confirmFirst && !confirm("Are you sure you want to exit this practice session? Progress will be saved.")) {
+                return;
+            }
+            document.getElementById('active-quiz-area').classList.add('hidden');
+            document.getElementById('active-quiz-area').classList.remove('block');
+            document.getElementById('units-container').classList.remove('hidden');
+        }
+
+        let examTimerInterval;
+
+        function startMockExam() {
+            document.getElementById('exam-start-modal').classList.add('hidden');
+            
+            // Hide config, show exam area
+            document.getElementById('exam-config-container').classList.add('hidden');
+            document.getElementById('active-exam-area').classList.remove('hidden');
+            document.getElementById('active-exam-area').classList.add('animate-fade-in');
+
+            // Timer Setup (2 Hours 30 Mins = 9000 seconds)
+            let timeLeft = 9000;
+            const timerDisplay = document.getElementById('exam-timer');
+            
+            clearInterval(examTimerInterval);
+            examTimerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(examTimerInterval);
+                    endMockExam(true, "Time is up! Submitting exam automatically.");
+                    return;
+                }
+                timeLeft--;
+                const h = Math.floor(timeLeft / 3600);
+                const m = Math.floor((timeLeft % 3600) / 60);
+                const s = timeLeft % 60;
+                timerDisplay.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                
+                // Visual warning when time is low (< 5 mins)
+                if (timeLeft < 300) {
+                    timerDisplay.parentElement.classList.replace('bg-red-100', 'bg-red-600');
+                    timerDisplay.parentElement.classList.replace('text-red-700', 'text-white');
+                    timerDisplay.parentElement.classList.replace('dark:bg-red-900/30', 'dark:bg-red-600');
+                    timerDisplay.parentElement.classList.replace('dark:text-red-400', 'dark:text-white');
+                    timerDisplay.parentElement.classList.add('animate-pulse');
+                }
+            }, 1000);
+            
+            // Toast Notification
+            showToast('<i class="ph-fill ph-check-circle text-xl"></i> Exam Simulation Started. Good luck!');
+        }
+
+        function endMockExam(forced = false, msg = "") {
+            if (!forced && !confirm("Are you sure you want to submit your exam early?")) {
+                return;
+            }
+            
+            clearInterval(examTimerInterval);
+            document.getElementById('active-exam-area').classList.add('hidden');
+            document.getElementById('exam-config-container').classList.remove('hidden');
+            
+            if(msg) showToast(msg);
+            else showToast('<i class="ph-fill ph-check-circle text-xl"></i> Exam submitted successfully. Redirecting to progress...', 4000);
+            
+            setTimeout(() => { if(document.getElementById('section-exam').classList.contains('active')) navigateTo('progress'); }, 2000);
+        }
+
+        function showToast(htmlMsg, duration = 3000) {
+            const msgBox = document.createElement('div');
+            msgBox.className = 'fixed bottom-4 right-4 bg-brand-600 text-white px-6 py-4 rounded-xl shadow-lg z-[110] animate-slide-up flex items-center gap-3';
+            msgBox.innerHTML = htmlMsg;
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                msgBox.style.opacity = '0';
+                msgBox.style.transition = 'opacity 0.5s';
+                setTimeout(() => msgBox.remove(), 500);
+            }, duration);
+        }
+
+        // --- Chart.js Initialization (Progress Section) ---
+        function initChart() {
+            const ctx = document.getElementById('performanceChart');
+            if(!ctx) return;
+
+            // Destroy existing chart instance if it exists to prevent memory leaks on theme change/re-render
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+
+            const isDark = htmlElement.classList.contains('dark');
+            const textColor = isDark ? '#e2e8f0' : '#475569';
+            const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+            window.myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Physics', 'Chemistry', 'Biology', 'Maths (Nat)', 'English', 'Civics'],
+                    datasets: [{
+                        label: 'Accuracy %',
+                        data: [65, 42, 85, 70, 78, 88],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)', // blue
+                            'rgba(239, 68, 68, 0.8)',  // red (weak)
+                            'rgba(34, 197, 94, 0.8)',  // green (strong)
+                            'rgba(168, 85, 247, 0.8)', // purple
+                            'rgba(249, 115, 22, 0.8)', // orange
+                            'rgba(20, 184, 166, 0.8)'  // teal
+                        ],
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
+                            titleColor: isDark ? '#ffffff' : '#0f172a',
+                            bodyColor: isDark ? '#cbd5e1' : '#475569',
+                            borderColor: isDark ? '#334155' : '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '% Accuracy';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: textColor,
+                                callback: function(value) { return value + "%" }
+                            },
+                            grid: { color: gridColor, drawBorder: false }
+                        },
+                        x: {
+                            ticks: { color: textColor },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Setup mock selection for filters to simulate app behavior
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                // In a real app, this would filter the content below
+                console.log(`Filter changed to: ${e.target.value}`);
+            });
+        });
+
+        (function initPWA() {
+            try {
+                // 1. Inject Manifest dynamically
+                const manifestJSON = {
+                    "name": "Fathi Store - Ethio Entrance Exam",
+                    "short_name": "Fathi Prep",
+                    "description": "Offline EUEE prep for Grade 12 students. Practice past exams completely offline.",
+                    "start_url": ".",
+                    "display": "standalone",
+                    "background_color": "#0f172a",
+                    "theme_color": "#22c55e",
+                    "icons": [{
+                        "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' fill='%2322c55e' viewBox='0 0 256 256'><path d='M252.81,99.1l-112-48a15.93,15.93,0,0,0-12.56,0l-112,48a16,16,0,0,0,0,29.4l20.4,8.74V170a16,16,0,0,0,8.74,14.3l64,32a15.9,15.9,0,0,0,14.32,0l64-32A16,16,0,0,0,196.11,170V137.24l35.6-15.26A16,16,0,0,0,252.81,99.1ZM128.53,65.65l104,44.57-104,44.57-104-44.57ZM180.11,170l-51.58,25.79L76.94,170V145.47l45.2,19.38a15.93,15.93,0,0,0,12.56,0l45.41-19.46Z'></path></svg>",
+                        "sizes": "192x192",
+                        "type": "image/svg+xml"
+                    }]
+                };
+                const manifestUrl = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestJSON));
+                document.head.insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestUrl}">`);
+
+                // Note: Browsers block ServiceWorker registration from blob: URLs for security.
+                // In a production environment, you would host an actual 'sw.js' file.
+                // For this single-file demo, we skip the SW registration to prevent the protocol error.
+                // The manifest above still enables "Add to Home Screen" UI on supported devices.
+                console.log('PWA Manifest loaded. (Service Worker skipped in sandbox environment)');
+            } catch(e) { console.error('PWA Setup Error:', e); }
+        })();
+
+        // Handle Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); // Prevent automatic prompt
+            deferredPrompt = e; // Stash the event
+            // Show custom install buttons
+            document.querySelectorAll('.install-app-btn').forEach(btn => btn.classList.remove('hidden'));
+        });
+
+        async function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                // Hide buttons after prompt
+                document.querySelectorAll('.install-app-btn').forEach(btn => btn.classList.add('hidden'));
+            } else {
+                // Fallback for browsers that installed it already or iOS
+                alert('To install on iOS, tap "Share" then "Add to Home Screen". On Chrome Desktop, click the install icon in the URL bar.');
+            }
+        }
+    </script>
+</body>
+</html>
